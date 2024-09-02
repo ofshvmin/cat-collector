@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Cat
 from .forms import FeedingForm
@@ -30,3 +30,11 @@ class CatUpdate(UpdateView):
 class CatDelete(DeleteView):
   model = Cat
   success_url = '/cats/'
+
+def add_feeding(request, cat_id):
+  form = FeedingForm(request.POST)
+  if form.is_valid():
+    new_feeding = form.save(commit=False)
+    new_feeding.cat_id = cat_id
+    new_feeding.save()
+  return redirect('cat-detail', cat_id=cat_id)
